@@ -12,17 +12,6 @@ import Css exposing (..)
 import H2ioModal exposing (modalModel)
 
 
---
--- main : Program Never
--- main =
---     App.program
---         { init = model ! [ config initialSkeleton ]
---         , update = update
---         , view = view
---         , subscriptions = subscriptions
---         }
-
-
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.none
