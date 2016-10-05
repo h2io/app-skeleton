@@ -27,6 +27,7 @@ appConfig =
     , content = div [] []
     , footer = Nothing
     , footerLinks = Nothing
+    , size = H2ioAppSkeleton.Small
     }
 
 

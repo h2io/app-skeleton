@@ -1,4 +1,4 @@
-module H2ioAppSkeleton exposing (Model, model, SkeletonList, FooterLinks, update, Msg(Show), view)
+module H2ioAppSkeleton exposing (Model, model, SkeletonList, Size(Small, Large), FooterLinks, update, Msg(Show), view)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -29,11 +29,37 @@ type alias FooterLinks =
     ( Name, Link )
 
 
+type Size
+    = Small
+    | Large
+
+
+type alias ModalSize =
+    { width : String
+    , height : String
+    }
+
+
+fromSize : Size -> ModalSize
+fromSize size =
+    case size of
+        Small ->
+            { width = "340px"
+            , height = "480px"
+            }
+
+        Large ->
+            { width = "480px"
+            , height = "480px"
+            }
+
+
 type alias SkeletonList msg =
     { header : String
     , content : Html msg
     , footer : Maybe (Html msg)
     , footerLinks : Maybe (List FooterLinks)
+    , size : Size
     }
 
 
@@ -43,6 +69,7 @@ initialSkeleton =
     , content = div [] []
     , footer = Nothing
     , footerLinks = Nothing
+    , size = Small
     }
 
 
@@ -91,17 +118,9 @@ msgToCmd msg =
         <| msg
 
 
-modalConfig : H2ioModal.Model
-modalConfig =
-    { modalModel
-        | width = "340px"
-        , height = "480px"
-    }
-
-
 model : Model
 model =
-    { modal = modalConfig
+    { modal = modalModel
     }
 
 
@@ -249,8 +268,15 @@ view list model =
         modal' =
             model.modal
 
+        { width, height } =
+            fromSize list.size
+
         newContent =
-            { modal' | content = parse list }
+            { modal'
+                | content = parse list
+                , width = width
+                , height = height
+            }
     in
         div []
             [ H2ioModal.view newContent |> App.map H2ioModal
