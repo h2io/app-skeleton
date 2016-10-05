@@ -1,7 +1,7 @@
 {
     "version": "1.0.0",
     "summary": "Starter skeleton for h2io projects",
-    "repository": "https://github.com/h2io/elm-app-skeleton",
+    "repository": "https://github.com/h2io/elm-app-skeleton.git",
     "license": "MIT",
     "source-directories": [
         ".",
