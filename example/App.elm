@@ -49,11 +49,7 @@ update msg model =
             model ! []
 
         Show ->
-            let
-                ( skeleton', cmd ) =
-                    H2ioAppSkeleton.update H2ioAppSkeleton.Show model.skeleton
-            in
-                { model | skeleton = skeleton' } ! []
+            { model | skeleton = H2ioAppSkeleton.show } ! []
 
         H2ioAppSkeleton msg' ->
             let

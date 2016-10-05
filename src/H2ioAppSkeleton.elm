@@ -1,9 +1,20 @@
-module H2ioAppSkeleton exposing (Model, model, SkeletonList, Size(Small, Large), FooterLinks, update, Msg(Show), view)
+module H2ioAppSkeleton
+    exposing
+        ( Model
+        , model
+        , SkeletonList
+        , Size(Small, Large)
+        , show
+        , close
+        , FooterLinks
+        , update
+        , Msg
+        , view
+        )
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.App as App
-import Task
 import Svg
 import List exposing (map)
 import String
@@ -80,7 +91,6 @@ type alias Model =
 
 type Msg
     = NoOp
-    | Show
     | H2ioModal (H2ioModal.Msg)
 
 
@@ -95,13 +105,6 @@ update msg model =
         NoOp ->
             model ! []
 
-        Show ->
-            let
-                modal' =
-                    H2ioModal.update H2ioModal.Show model.modal
-            in
-                { model | modal = modal' } ! []
-
         H2ioModal msg' ->
             let
                 modal' =
@@ -110,18 +113,28 @@ update msg model =
                 { model | modal = modal' } ! []
 
 
-msgToCmd : Msg -> Cmd Msg
-msgToCmd msg =
-    Task.perform (\_ -> Debug.crash "This failure cannot happen.")
-        identity
-        <| Task.succeed
-        <| msg
-
-
 model : Model
 model =
     { modal = modalModel
     }
+
+
+close : Model
+close =
+    let
+        modal' =
+            H2ioModal.update H2ioModal.Close model.modal
+    in
+        { model | modal = modal' }
+
+
+show : Model
+show =
+    let
+        modal' =
+            H2ioModal.update H2ioModal.Show model.modal
+    in
+        { model | modal = modal' }
 
 
 defaultLinks : List FooterLinks
