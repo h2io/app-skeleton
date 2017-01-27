@@ -1,31 +1,47 @@
 module H2ioAppSkeleton
     exposing
         ( Model
-        , model
-        , SkeletonList
-        , Size(Small, Large)
-        , show
-        , close
-        , FooterLinks
-        , update
         , Msg
         , view
+        , init
+        , update
+        , show
+        , SkeletonList
+        , modalContent
+        , Size(..)
         )
 
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.App as App
-import Svg
-import List exposing (map)
+import H2ioModal
+import Styles exposing (..)
+import H2ioUi
+import Html exposing (div, b, span, a, button, text, h1, p, Html)
+import Html.Attributes exposing (style, href, target)
 import String
-import Svg.Attributes exposing (..)
-import Css exposing (..)
-import H2ioModal exposing (modalModel)
+import List exposing (map)
+import InlineHover exposing (hover)
 
 
-subscriptions : Model -> Sub Msg
-subscriptions model =
-    Sub.none
+type alias Model =
+    H2ioModal.Model
+
+
+type alias Msg =
+    H2ioModal.Msg
+
+
+type alias ModalSize =
+    { width : String
+    , height : String
+    }
+
+
+type alias SkeletonList msg =
+    { header : String
+    , content : Html msg
+    , footer : Maybe (Html msg)
+    , footerLinks : Maybe (List FooterLinks)
+    , size : Size
+    }
 
 
 type alias Name =
@@ -40,101 +56,43 @@ type alias FooterLinks =
     ( Name, Link )
 
 
+init : H2ioModal.Model
+init =
+    H2ioModal.init
+
+
+show : H2ioModal.Model -> ( H2ioModal.Model, Cmd H2ioModal.Msg )
+show model =
+    H2ioModal.show model
+
+
+view : (H2ioModal.Msg -> msg) -> H2ioModal.ViewModel msg -> H2ioModal.Model -> Html msg
+view =
+    H2ioModal.view
+
+
+update : H2ioModal.Msg -> H2ioModal.Model -> ( H2ioModal.Model, Cmd H2ioModal.Msg )
+update =
+    H2ioModal.update
+
+
 type Size
     = Small
     | Large
-
-
-type alias ModalSize =
-    { width : String
-    , height : String
-    }
 
 
 fromSize : Size -> ModalSize
 fromSize size =
     case size of
         Small ->
-            { width = "340px"
-            , height = "480px"
+            { width = "360px"
+            , height = "500px"
             }
 
         Large ->
             { width = "480px"
             , height = "480px"
             }
-
-
-type alias SkeletonList msg =
-    { header : String
-    , content : Html msg
-    , footer : Maybe (Html msg)
-    , footerLinks : Maybe (List FooterLinks)
-    , size : Size
-    }
-
-
-initialSkeleton : SkeletonList Msg
-initialSkeleton =
-    { header = ""
-    , content = div [] []
-    , footer = Nothing
-    , footerLinks = Nothing
-    , size = Small
-    }
-
-
-type alias Model =
-    { modal : H2ioModal.Model
-    }
-
-
-type Msg
-    = NoOp
-    | H2ioModal (H2ioModal.Msg)
-
-
-styles : List Css.Mixin -> Html.Attribute a
-styles =
-    Css.asPairs >> Html.Attributes.style
-
-
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
-    case msg of
-        NoOp ->
-            model ! []
-
-        H2ioModal msg' ->
-            let
-                modal' =
-                    H2ioModal.update msg' model.modal
-            in
-                { model | modal = modal' } ! []
-
-
-model : Model
-model =
-    { modal = modalModel
-    }
-
-
-close : Model
-close =
-    let
-        modal' =
-            H2ioModal.update H2ioModal.Close model.modal
-    in
-        { model | modal = modal' }
-
-
-show : Model
-show =
-    let
-        modal' =
-            H2ioModal.update H2ioModal.Show model.modal
-    in
-        { model | modal = modal' }
 
 
 defaultLinks : List FooterLinks
@@ -146,108 +104,38 @@ defaultLinks =
     ]
 
 
-headingStyle : List Css.Mixin
-headingStyle =
-    [ all initial
-    , Css.displayFlex
-    , Css.margin3 (px 10) zero (px 25)
-    , Css.fontFamilies [ qt ("Fira Sans"), "sans-serif" ]
-    , Css.fontSize (px 32)
-    , Css.fontWeight bold
-    , Css.color (hex "464b4d")
-    , Css.textAlign center
-    , Css.flexWrap Css.wrap
-    ]
-
-
-smallStyle : List Css.Mixin
-smallStyle =
-    [ all initial
-    , Css.display block
-    , Css.fontSize (px 13)
-    , Css.letterSpacing (px 2)
-    , Css.color (hex "91989b")
-    , Css.fontFamilies [ (qt "Times New Roman"), "Times", "serif" ]
-    , Css.fontWeight (int 400)
-    , Css.textAlign center
-    , Css.marginTop (px -10)
-    , Css.width (pct 100)
-    ]
-
-
-linksStyle : List Css.Mixin
-linksStyle =
-    [ all initial
-    , Css.display block
-    , Css.width (pct 100)
-    , Css.textAlign center
-    , Css.position absolute
-    , Css.bottom (px -25)
-    , Css.left zero
-    , Css.color (hex "f3f4f4")
-    , Css.fontFamilies [ qt ("Fira Sans"), "sans-serif" ]
-    ]
-
-
-linkStyle : List Css.Mixin
-linkStyle =
-    [ all initial
-    , Css.color (hex "bdc2c4")
-    , Css.fontSize (px 11)
-    , Css.fontFamilies [ qt ("Fira Sans"), "sans-serif" ]
-    , Css.cursor pointer
-    , Css.paddingRight (px 5)
-    , Css.lastOfType [ paddingRight zero ]
-    ]
-
-
 footerEl : List FooterLinks -> Html msg
 footerEl list =
     div []
         [ list
             |> map
                 (\( name, link ) ->
-                    a
+                    hover linkStyleHover
+                        a
                         [ href link
-                        , Html.Attributes.target "_blank"
+                        , target "_blank"
                         , styles linkStyle
-                        , Html.Attributes.style
-                            [ ( "transition", ".2s ease color" )
-                            , ( "will-change", "color" )
-                            ]
                         ]
-                        [ Html.text name ]
+                        [ Html.text name, span [ styles linkStyle ] [ text " |" ] ]
                 )
             |> div [ styles linksStyle ]
         ]
 
 
-parse : SkeletonList msg -> Html msg
-parse skeleton =
+parse : SkeletonList msg -> a -> Html msg
+parse skeleton model =
     let
         header =
             div []
-                [ h1
-                    [ styles headingStyle
-                    , Html.Attributes.style [ ( "justify-content", "center" ) ]
-                    ]
-                    [ Svg.svg
-                        [ Svg.Attributes.width "40"
-                        , Svg.Attributes.height "40"
-                        , Html.Attributes.style
-                            [ ( "fill", "#379ac4" )
-                            , ( "display", "inline-block" )
-                            , ( "vertical-align", "text-top" )
-                            ]
-                        ]
-                        [ Svg.path [ d "M1 1h5v38H1z" ] []
-                        , Svg.path [ d "M1 1h10v5H1zM1 34h10v5H1zM34 1h5v38h-5z" ] []
-                        , Svg.path [ d "M29 1h10v5H29zM29 34h10v5H29zM10 28h20v5H10zM17 6h6v20h-6z" ] []
-                        , Svg.path [ d "M10 13h20v6H10z" ] []
-                        ]
+                [ h1 [ styles headingStyle ]
+                    [ H2ioUi.logo 42 []
                     , Html.text (String.fromChar ' ' ++ skeleton.header)
                     , Html.small [ styles smallStyle ]
-                        [ Html.text "un serviciu [±] h2.io" ]
+                        [ Html.text "un serviciu "
+                        , H2ioUi.logo 11
+                            [ ( "color", "#91989b" ) ]
+                        , Html.text " h2.io"
+                        ]
                     ]
                 ]
 
@@ -267,7 +155,19 @@ parse skeleton =
                 Just list ->
                     footerEl list
     in
-        div []
+        div
+            [ style
+                [ ( "all", "initial" )
+                , ( "width", "100%" )
+                , ( "height", "100%" )
+                , ( "position", "absolute" )
+                , ( "top", "0" )
+                , ( "left", "0" )
+                , ( "offset-inline-start", "0" )
+                , ( "padding", "10px" )
+                , ( "box-sizing", "border-box" )
+                ]
+            ]
             [ header
             , skeleton.content
             , footer
@@ -275,22 +175,13 @@ parse skeleton =
             ]
 
 
-view : SkeletonList H2ioModal.Msg -> Model -> Html Msg
-view list model =
+modalContent : SkeletonList msg -> a -> H2ioModal.ViewModel msg
+modalContent list model =
     let
-        modal' =
-            model.modal
-
         { width, height } =
             fromSize list.size
-
-        newContent =
-            { modal'
-                | content = parse list
-                , width = width
-                , height = height
-            }
     in
-        div []
-            [ H2ioModal.view newContent |> App.map H2ioModal
-            ]
+        { content = parse list model
+        , width = width
+        , height = height
+        }
