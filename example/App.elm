@@ -2,13 +2,12 @@ module App exposing (..)
 
 import Html exposing (div, button, text, h1, p, Html)
 import Html.Events exposing (onClick)
-import Html.App as App
 import H2ioAppSkeleton
 
 
-main : Program Never
+main : Program Never Model Msg
 main =
-    App.program
+    Html.program
         { init = model ! []
         , update = update
         , view = view
@@ -39,7 +38,7 @@ type alias Model =
 type Msg
     = NoOp
     | Show
-    | H2ioAppSkeleton (H2ioAppSkeleton.Msg)
+    | H2ioAppSkeleton H2ioAppSkeleton.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -49,19 +48,23 @@ update msg model =
             model ! []
 
         Show ->
-            { model | skeleton = H2ioAppSkeleton.show } ! []
-
-        H2ioAppSkeleton msg' ->
             let
-                ( skeleton', cmd ) =
-                    H2ioAppSkeleton.update msg' model.skeleton
+                ( skeleton, skeletonCmd ) =
+                    H2ioAppSkeleton.show model.skeleton
             in
-                { model | skeleton = skeleton' } ! []
+                { model | skeleton = skeleton } ! [ Cmd.map H2ioAppSkeleton skeletonCmd ]
+
+        H2ioAppSkeleton msg_ ->
+            let
+                ( skeleton_, cmd ) =
+                    H2ioAppSkeleton.update msg_ model.skeleton
+            in
+                { model | skeleton = skeleton_ } ! []
 
 
 model : Model
 model =
-    { skeleton = H2ioAppSkeleton.model
+    { skeleton = H2ioAppSkeleton.init
     }
 
 
@@ -69,5 +72,7 @@ view : Model -> Html Msg
 view model =
     div []
         [ button [ onClick Show ] [ text "Show Modal" ]
-        , H2ioAppSkeleton.view appConfig model.skeleton |> App.map H2ioAppSkeleton
+        , H2ioAppSkeleton.view H2ioAppSkeleton
+            (H2ioAppSkeleton.modalContent appConfig model)
+            model.skeleton
         ]
