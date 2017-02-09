@@ -58,8 +58,15 @@ update msg model =
             let
                 ( skeleton_, cmd ) =
                     H2ioAppSkeleton.update msg_ model.skeleton
+
+                runCmd =
+                    if H2ioAppSkeleton.checkClose msg_ then
+                        -- check if we close the modal so we can run some clean-up
+                        Cmd.none
+                    else
+                        Cmd.none
             in
-                { model | skeleton = skeleton_ } ! []
+                { model | skeleton = skeleton_ } ! [ Cmd.map H2ioAppSkeleton cmd ]
 
 
 model : Model

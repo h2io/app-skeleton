@@ -9,9 +9,10 @@ module H2ioAppSkeleton
         , SkeletonList
         , modalContent
         , Size(..)
+        , checkClose
         )
 
-import H2ioModal
+import H2ioModal exposing (Msg(..))
 import Styles exposing (..)
 import H2ioUi
 import Html exposing (div, b, span, a, button, text, h1, p, Html)
@@ -25,8 +26,8 @@ type alias Model =
     H2ioModal.Model
 
 
-type Msg
-    = Msg H2ioModal.Msg
+type alias Msg =
+    H2ioModal.Msg
 
 
 type alias ModalSize =
@@ -185,3 +186,11 @@ modalContent list model =
         , width = width
         , height = height
         }
+
+
+checkClose : Msg -> Bool
+checkClose msg =
+    if msg == (Close) then
+        True
+    else
+        False
