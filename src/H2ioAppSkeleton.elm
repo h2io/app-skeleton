@@ -25,8 +25,8 @@ type alias Model =
     H2ioModal.Model
 
 
-type alias Msg =
-    H2ioModal.Msg
+type Msg
+    = Msg H2ioModal.Msg
 
 
 type alias ModalSize =
