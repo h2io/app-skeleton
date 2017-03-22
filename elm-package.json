@@ -14,7 +14,7 @@
         "elm-lang/core": "5.1.1 <= v < 6.0.0",
         "elm-lang/html": "2.0.0 <= v < 3.0.0",
         "elm-lang/svg": "2.0.0 <= v < 3.0.0",
-        "h2io/elm-modal": "2.1.0 <= v < 3.0.0",
+        "h2io/elm-modal": "2.1.7 <= v < 3.0.0",
         "h2io/elm-ui": "1.0.3 <= v < 2.0.0",
         "jinjor/elm-inline-hover": "1.0.0 <= v < 2.0.0",
         "rtfeldman/elm-css": "7.0.0 <= v < 8.0.0"
