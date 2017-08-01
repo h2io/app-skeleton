@@ -17,9 +17,9 @@ import Styles exposing (..)
 import H2ioUi
 import Html exposing (div, b, span, a, button, text, h1, p, Html)
 import Html.Attributes exposing (style, href, target)
+import Html.Styles exposing (..)
 import String
 import List exposing (map)
-import InlineHover exposing (hover)
 
 
 type alias Model =
@@ -111,15 +111,22 @@ footerEl list =
         [ list
             |> map
                 (\( name, link ) ->
-                    hover linkStyleHover
-                        a
+                    a
                         [ href link
                         , target "_blank"
                         , styles linkStyle
+                            [ pseudo ":last-of-type" [ ( "padding-right", "0" ) ]
+                            , pseudo ":hover" linkStyleHover
+                            ]
                         ]
-                        [ Html.text name, span [ styles linkStyle ] [ text " |" ] ]
+                        [ Html.text name
+                        , span
+                            [ styles linkStyle []
+                            ]
+                            [ text " |" ]
+                        ]
                 )
-            |> div [ styles linksStyle ]
+            |> div [ styles linksStyle [] ]
         ]
 
 
@@ -128,10 +135,10 @@ parse skeleton model =
     let
         header =
             div []
-                [ h1 [ styles headingStyle ]
+                [ h1 [ styles headingStyle [] ]
                     [ H2ioUi.logo 42 []
                     , Html.text (String.fromChar ' ' ++ skeleton.header)
-                    , Html.small [ styles smallStyle ]
+                    , Html.small [ styles smallStyle [] ]
                         [ Html.text "un serviciu "
                         , H2ioUi.logo 11
                             [ ( "color", "#91989b" ) ]
@@ -157,7 +164,7 @@ parse skeleton model =
                     footerEl list
     in
         div
-            [ style
+            [ styles
                 [ ( "all", "initial" )
                 , ( "width", "100%" )
                 , ( "height", "100%" )
@@ -168,6 +175,7 @@ parse skeleton model =
                 , ( "padding", "10px" )
                 , ( "box-sizing", "border-box" )
                 ]
+                []
             ]
             [ header
             , skeleton.content

@@ -1,74 +1,72 @@
 module Styles exposing (..)
 
-import Css exposing (..)
-import Html.Attributes exposing (style)
-import Html
+
+type alias StandarcCss =
+    List ( String, String )
 
 
-styles : List Css.Mixin -> Html.Attribute a
-styles =
-    Css.asPairs >> Html.Attributes.style
-
-
-headingStyle : List Css.Mixin
+headingStyle : StandarcCss
 headingStyle =
-    [ all initial
-    , displayFlex
-    , margin3 (px 10) zero (px 25)
-    , fontFamilies [ qt ("Fira Sans"), "sans-serif" ]
-    , fontSize (px 32)
-    , fontWeight bold
-    , color (hex "464b4d")
-    , textAlign center
-    , flexWrap wrap
-    , property "justify-content" "center"
+    [ ( "all", "initial" )
+    , ( "display", "flex" )
+    , ( "margin", "10px 0 25px" )
+    , ( "font-family", "'Fira Sans', sans-serif" )
+    , ( "font-size", "32px" )
+    , ( "font-weight", "bold" )
+    , ( "color", "#464b4d" )
+    , ( "flex-wrap", "wrap" )
+    , ( "text-align", "center" )
+    , ( "justify-content", "center" )
     ]
 
 
-smallStyle : List Css.Mixin
+smallStyle : StandarcCss
 smallStyle =
-    [ all initial
-    , display block
-    , fontSize (px 13)
-    , letterSpacing (px 2)
-    , color (hex "91989b")
-    , fontFamilies [ (qt "Times New Roman"), "Times", "serif" ]
-    , fontWeight (int 400)
-    , textAlign center
-    , marginTop (px -10)
-    , width (pct 100)
+    [ ( "all", "initial" )
+    , ( "display", "block" )
+    , ( "font-size", "13px" )
+    , ( "letter-spacing", "2px" )
+    , ( "color", "#91989b" )
+    , ( "font-family", "'Times New Roman', serif" )
+    , ( "fontWeight", "400" )
+    , ( "text-align", "center" )
+    , ( "margin-top", "-10px" )
+    , ( "width", "100%" )
     ]
 
 
-linksStyle : List Css.Mixin
+linksStyle : StandarcCss
 linksStyle =
-    [ all initial
-    , display block
-    , width (pct 100)
-    , textAlign center
-    , position absolute
-    , bottom (px -25)
-    , left zero
-    , color (hex "f3f4f4")
-    , fontFamilies [ qt ("Fira Sans"), "sans-serif" ]
-    , property "offset-block-end" "-25px"
+    [ ( "all", "initial" )
+    , ( "display", "block" )
+    , ( "width", "100%" )
+    , ( "text-align", "center" )
+    , ( "position", "absolute" )
+    , ( "bottom", "-25px" )
+    , ( "left", "0" )
+    , ( "color", "#f3f4f4" )
+    , ( "font-family", "'Fira Sans', sans-serif" )
+    , ( "offset-block-end", "-25px" )
     ]
 
 
-linkStyle : List Css.Mixin
+linkStyle : StandarcCss
 linkStyle =
-    [ all initial
-    , color (hex "bdc2c4")
-    , fontSize (px 11)
-    , fontFamilies [ qt ("Fira Sans"), "sans-serif" ]
-    , cursor pointer
-    , paddingRight (px 5)
-    , lastOfType [ paddingRight zero ]
-    , property "transition" ".2s ease color"
-    , property "will-change" "color"
+    [ ( "all", "initial" )
+    , ( "color", "#bdc2c4" )
+    , ( "font-size", "11px" )
+    , ( "font-family", "'Fira Sans', sans-serif" )
+    , ( "cursor", "pointer" )
+    , ( "padding-right", "5px" )
+    , ( "transition", ".2s ease color" )
+    , ( "will-change", "color" )
     ]
 
 
-linkStyleHover : List ( String, String )
+
+-- , lastOfType [ paddingRight zero ]
+
+
+linkStyleHover : StandarcCss
 linkStyleHover =
     [ ( "color", "#f3f4f4" ) ]
